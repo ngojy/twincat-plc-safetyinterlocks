@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
+  <DUT Name="E_SafeSequenceState" Id="{bc5a4e50-470e-42ff-b85e-9c7df2d776b8}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_SafeSequenceState :
+(
+	IDLE := 0,
+	RUNNING := 1,
+	FAULT := 2,
+	RESET_PENDING := 3
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
+  <POU Name="MAIN" Id="{4223728f-98f2-4c0c-a0c1-0da8f36ac50b}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	eState : E_SafeSequenceState := E_SafeSequenceState.IDLE;
+	bStartButton : BOOL;
+	bEStopRaw : BOOL;
+	bResetButton : BOOL;
+	bConveyorRun : BOOL;
+	fbEStop : FB_EStop;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[fbEStop(bEStopRaw := bEStopRaw, bResetButton := bResetButton);
+
+IF fbEStop.bFaultActive THEN
+	eState := E_SafeSequenceState.FAULT;
+END_IF
+
+CASE eState OF
+	E_SafeSequenceState.IDLE:
+		bConveyorRun := FALSE;
+		IF bStartButton THEN
+			eState := E_SafeSequenceState.RUNNING;
+		END_IF
+		
+	E_SafeSequenceState.RUNNING:
+		bConveyorRun := TRUE;
+		
+	E_SafeSequenceState.FAULT:
+		bConveyorRun := FALSE;
+		IF NOT fbEStop.bFaultActive THEN
+			eState := E_SafeSequenceState.IDLE;
+		END_IF
+END_CASE]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

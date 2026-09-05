@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
+  <POU Name="FB_EStop" Id="{ed360b63-46ad-4013-b52c-7064d9cb4567}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_EStop
+VAR_INPUT
+	bEStopRaw : BOOL; // TRUE = e=stop physically pressed
+	bResetButton : BOOL; // operator reset after clearing fault
+END_VAR
+VAR_OUTPUT
+	bFaultActive : BOOL; // latched fault state
+END_VAR
+VAR
+	rTrigEStop : R_TRIG;
+	rTrigReset : R_TRIG;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[rtrigEstop(CLK := bEStopRaw);
+rtrigReset(CLK := bResetButton);
+
+IF rtrigEStop.Q THEN
+	bFaultActive := TRUE;
+END_IF
+
+IF rtrigReset.Q AND NOT bEStopRaw THEN
+	bFaultActive := FALSE;
+END_IF]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
